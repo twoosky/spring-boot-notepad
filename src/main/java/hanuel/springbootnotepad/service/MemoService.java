@@ -1,6 +1,7 @@
 package hanuel.springbootnotepad.service;
 
-import hanuel.springbootnotepad.domain.repository.MemoRepository;
+import hanuel.springbootnotepad.repository.MemoRepository;
+import hanuel.springbootnotepad.entity.Memo;
 import hanuel.springbootnotepad.dto.MemoDto;
 import org.springframework.stereotype.Service;
 
@@ -13,8 +14,8 @@ public class MemoService {
         this.memoRepository = memoRepository;
     }
 
-    public Long saveMemo(MemoDto memoDto) {
-        return memoRepository.save(memoDto.toEntity()).getId();
+    public Memo saveMemo(MemoDto memoDto) {
+        return memoRepository.save(memoDto.toEntity());
     }
 
     public void deleteMemo(Long id) {

@@ -1,5 +1,6 @@
 package hanuel.springbootnotepad.controller;
 
+import hanuel.springbootnotepad.entity.Memo;
 import hanuel.springbootnotepad.dto.MemoDto;
 import hanuel.springbootnotepad.service.MemoService;
 import org.springframework.http.HttpStatus;
@@ -15,10 +16,10 @@ public class MemoController {
         this.memoService = memoService;
     }
 
-    @PostMapping("")
-    public ResponseEntity<MemoDto> save(@RequestBody MemoDto memoDto) {
-        memoService.saveMemo(memoDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(memoDto);
+    @PostMapping
+    public ResponseEntity<Memo> save(@RequestBody MemoDto memoDto) {
+        Memo memo = memoService.saveMemo(memoDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(memo);
     }
 
     @DeleteMapping("/{memoId}")

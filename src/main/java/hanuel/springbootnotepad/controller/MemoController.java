@@ -22,8 +22,14 @@ public class MemoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(memo);
     }
 
+    @PutMapping("/{memoId}")
+    public ResponseEntity<Memo> update(@PathVariable Long id, @RequestBody MemoDto memoDto) throws Exception{
+        Memo memo = memoService.updateMemo(id, memoDto);
+        return ResponseEntity.status(HttpStatus.OK).body(memo);
+    }
+
     @DeleteMapping("/{memoId}")
-    public void delete(@PathVariable Long id){
+    public void delete(@PathVariable Long id) throws Exception{
         memoService.deleteMemo(id);
     }
 

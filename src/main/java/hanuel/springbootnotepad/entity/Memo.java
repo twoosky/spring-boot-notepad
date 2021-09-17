@@ -30,6 +30,11 @@ public class Memo {
         this.text = text;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+    }
 
+    public void update(String title, String text) {
+        this.title = title;
+        this.text = text;
+        this.updatedAt = LocalDateTime.now();
     }
 }

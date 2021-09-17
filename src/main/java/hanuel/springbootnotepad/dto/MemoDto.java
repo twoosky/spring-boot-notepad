@@ -26,7 +26,7 @@ public class MemoDto {
     }
 
     @Builder
-    public MemoDto(String title, String text, LocalDate createdAt, LocalDate updatedAt) {
+    public MemoDto(String title, String text) {
         this.title = title;
         this.text = text;
     }

@@ -37,6 +37,21 @@ public class MemoService {
         memoRepository.delete(memo);
     }
 
+    public Memo detailMemo(Long id) throws Exception{
+        Memo memo = memoRepository.findById(id)
+                .orElseThrow(() ->
+                        new Exception("don't exist memo!")
+                );
+        return memo;
+    }
+
+    public Memo validCheck(Long id) throws Exception{
+        return memoRepository.findById(id)
+                .orElseThrow(() ->
+                        new Exception("don't exist memo!")
+                );
+    }
+
     // memoRepository.findById(id) null 검사 함수 만들어 사용
     // optional.orElseThrow(); 하면 optional type이 아니라 Memo type으로 반환되나?
     // 메모 정보 검색 구현 !!

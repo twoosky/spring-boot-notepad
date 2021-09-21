@@ -1,13 +1,14 @@
 package hanuel.springbootnotepad.controller;
 
+import hanuel.springbootnotepad.dto.*;
 import hanuel.springbootnotepad.entity.Memo;
-import hanuel.springbootnotepad.dto.MemoDto;
 import hanuel.springbootnotepad.service.MemoService;
-import org.apache.coyote.Response;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -20,25 +21,30 @@ public class MemoController {
     }
 
     @PostMapping
-    public ResponseEntity<Memo> save(@RequestBody MemoDto memoDto) {
-        Memo memo = memoService.saveMemo(memoDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(memo);
+    public ResponseEntity<CreateResponseDto> create(@RequestBody RequestDto requestDto) {
+        return new ResponseEntity<>(memoService.createMemo(requestDto), HttpStatus.CREATED);
     }
 
     @PutMapping("/{memoId}")
-    public ResponseEntity<Memo> update(@PathVariable Long id, @RequestBody MemoDto memoDto) throws Exception{
-        Memo memo = memoService.updateMemo(id, memoDto);
-        return ResponseEntity.status(HttpStatus.OK).body(memo);
+    public ResponseEntity<UpdateResponseDto> update(@PathVariable Long id, @RequestBody RequestDto requestDto) {
+        UpdateResponseDto memo = memoService.updateMemo(id, requestDto);
+        return new ResponseEntity<>(memo, HttpStatus.OK);
     }
 
     @DeleteMapping("/{memoId}")
-    public void delete(@PathVariable Long id) throws Exception{
+    public void delete(@PathVariable Long id){
         memoService.deleteMemo(id);
     }
 
-    @GetMapping("/{memold}")
-    public ResponseEntity<Memo> detail(@PathVariable Long id) throws Exception{
-        Memo memo = memoService.detailMemo(id);
-        return ResponseEntity.status(HttpStatus.OK).body(memo);
+    @GetMapping("/{memoId}")
+    public ResponseEntity<DetailResponseDto> detail(@PathVariable Long id) {
+        DetailResponseDto memo = memoService.detailMemo(id);
+        return new ResponseEntity<>(memo, HttpStatus.OK);
+    }
+
+    @GetMapping("")
+    public ResponseEntity<List<InfoResponseDto>> search(@RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDateTime date, @RequestParam("page") Integer page) {
+        List<InfoResponseDto> memos = memoService.searchMemo(date, page);
+        return new ResponseEntity<>(memos, HttpStatus.OK);
     }
 }

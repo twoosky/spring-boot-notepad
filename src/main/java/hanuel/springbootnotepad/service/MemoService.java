@@ -1,35 +1,42 @@
 package hanuel.springbootnotepad.service;
 
+import hanuel.springbootnotepad.dto.*;
 import hanuel.springbootnotepad.entity.Memo;
-import hanuel.springbootnotepad.dto.MemoDto;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import hanuel.springbootnotepad.repository.MemoRepository;
 
-import java.util.Optional;
+import java.time.LocalDateTime;
+import java.util.List;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 public class MemoService {
 
     private final MemoRepository memoRepository;
+    private static final Integer PAGE_SIZE = 5;
 
     public MemoService(MemoRepository memoRepository) {
         this.memoRepository = memoRepository;
     }
 
-    public Memo saveMemo(MemoDto memoDto) {
-        return memoRepository.save(memoDto.toEntity());
+    public CreateResponseDto createMemo(RequestDto requestDto) {
+        Memo memo = memoRepository.save(requestDto.toEntity());
+        return CreateResponseDto.create(memo);
     }
 
-    public Memo updateMemo(Long id, MemoDto memoDto) throws Exception{
+    public UpdateResponseDto updateMemo(Long id, RequestDto requestDto) {
         Memo memo = memoRepository.findById(id)
                 .orElseThrow(() ->
                         new Exception("don't exist memo!")
                 );
-        memo.update(memoDto.getTitle(), memoDto.getText());
-        return memoRepository.findById(id).get();
+        memo.update(requestDto.getTitle(), requestDto.getText());
+        return UpdateResponseDto.create(memoRepository.findById(id).get());
     }
 
-    public void deleteMemo(Long id) throws Exception{
+    public void deleteMemo(Long id) {
         Memo memo = memoRepository.findById(id)
                 .orElseThrow(() ->
                         new Exception("don't exist memo!")
@@ -37,19 +44,20 @@ public class MemoService {
         memoRepository.delete(memo);
     }
 
-    public Memo detailMemo(Long id) throws Exception{
+    public DetailResponseDto detailMemo(Long id) {
         Memo memo = memoRepository.findById(id)
                 .orElseThrow(() ->
                         new Exception("don't exist memo!")
                 );
-        return memo;
+        return DetailResponseDto.create(memo);
     }
 
-    public Memo validCheck(Long id) throws Exception{
-        return memoRepository.findById(id)
-                .orElseThrow(() ->
-                        new Exception("don't exist memo!")
-                );
+    public List<InfoResponseDto> searchMemo(LocalDateTime date, Integer page){
+        PageRequest pageRequest = PageRequest.of(page, PAGE_SIZE, Sort.by("createdAt").descending());
+        List<Memo> memos = memoRepository.findAll(pageRequest).getContent();
+        return memos.stream()
+                .map(InfoResponseDto::create)
+                .collect(toList());
     }
 
     // memoRepository.findById(id) null 검사 함수 만들어 사용

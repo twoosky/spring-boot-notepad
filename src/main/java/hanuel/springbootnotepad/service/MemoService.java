@@ -2,12 +2,15 @@ package hanuel.springbootnotepad.service;
 
 import hanuel.springbootnotepad.dto.*;
 import hanuel.springbootnotepad.entity.Memo;
+import hanuel.springbootnotepad.exception.MemoNotFoundException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import hanuel.springbootnotepad.repository.MemoRepository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -29,45 +32,43 @@ public class MemoService {
 
     public UpdateResponseDto updateMemo(Long id, RequestDto requestDto) {
         Memo memo = memoRepository.findById(id)
-                .orElseThrow(() ->
-                        new Exception("don't exist memo!")
-                );
+                .orElseThrow(MemoNotFoundException::new);
         memo.update(requestDto.getTitle(), requestDto.getText());
-        return UpdateResponseDto.create(memoRepository.findById(id).get());
+        memoRepository.save(memo);
+        return UpdateResponseDto.create(memo);
     }
 
     public void deleteMemo(Long id) {
         Memo memo = memoRepository.findById(id)
-                .orElseThrow(() ->
-                        new Exception("don't exist memo!")
-                );
+                .orElseThrow(MemoNotFoundException::new);
         memoRepository.delete(memo);
     }
 
     public DetailResponseDto detailMemo(Long id) {
         Memo memo = memoRepository.findById(id)
-                .orElseThrow(() ->
-                        new Exception("don't exist memo!")
-                );
+                .orElseThrow(MemoNotFoundException::new);
         return DetailResponseDto.create(memo);
     }
 
-    public List<InfoResponseDto> searchMemo(LocalDateTime date, Integer page){
+    public List<InfoResponseDto> searchMemo(LocalDate date, Integer page){
+        LocalDateTime start = date.atStartOfDay();
+        LocalDateTime end = LocalDateTime.of(date, LocalTime.of(23, 59, 59));
+
         PageRequest pageRequest = PageRequest.of(page, PAGE_SIZE, Sort.by("createdAt").descending());
-        List<Memo> memos = memoRepository.findAll(pageRequest).getContent();
+        List<Memo> memos = memoRepository.findAllByCreatedAtBetween(start, end, pageRequest).getContent();
+        if(memos.isEmpty()) throw new MemoNotFoundException();
+
         return memos.stream()
                 .map(InfoResponseDto::create)
                 .collect(toList());
     }
 
-    // memoRepository.findById(id) null 검사 함수 만들어 사용
-    // optional.orElseThrow(); 하면 optional type이 아니라 Memo type으로 반환되나?
-    // 메모 정보 검색 구현 !!
-    // GET: /memos 구현
-    // GET: /memos/{id} 구현 (선택)
-    // @RequestBody 필요 없나?
-    // HttpStatus code 구현
-    // Exception 더 공부해서 구현
-    // User Security 구현
+    public List<DetailResponseDto> allMemo() {
+        List<Memo> memos = memoRepository.findAll();
+        if(memos.isEmpty()) throw new MemoNotFoundException();
 
+        return memos.stream()
+                .map(DetailResponseDto::create)
+                .collect(toList());
+    }
 }

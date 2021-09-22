@@ -2,10 +2,12 @@ package hanuel.springbootnotepad.dto;
 
 import hanuel.springbootnotepad.entity.Memo;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Getter
+@Setter
 public class RequestDto {
     private String title;
     private String text;

@@ -6,11 +6,11 @@
 * IDE: IntelliJ
 * TEST: postman
 
-## 목차
-* [Create](Create)
-* [Read](Read)
-* [Update](Update)
-* [Delete](Delete)
+## Table of Contents
+* [Create](#Create)
+* [Read](#Read)
+* [Update](#Update)
+* [Delete](#Delete)
 
 ## Create
 * URL: <http://localhost:8080/memos>
@@ -52,16 +52,16 @@
 * URL: <http://localhost:8080/memos/{memoId}>
 * HttpStatus code: 200
 <img src="https://user-images.githubusercontent.com/50009240/134508957-a5d21bbe-1d6b-4755-9799-04ef76c706f0.png" width="1036px" height="438px"></img><br/>
-### 메모 수정 실패
+#### 메모 수정 실패
 * 해당 Id의 메모가 존재하지 않는 경우
 * HttpStatus code: 404  
 <img src="https://user-images.githubusercontent.com/50009240/134510034-2edf8d41-092d-4111-a50e-3e9822152a7e.png" width="1034px" height="479px"></img><br/>
 
-## DELETE
+## Delete
 * URL: <http://localhost:8080/memos/{memoId}>
 * HttpStatus code: 200
 <img src="https://user-images.githubusercontent.com/50009240/134510619-e7b099db-1f10-45e4-9988-1c4bb9168703.png" width="1036px" height="360px"></img><br/>
-### 메모 삭제 실패
+#### 메모 삭제 실패
 * 해당 Id의 메모가 존재하지 않는 경우
 * HttpStatus code: 404
 <img src="https://user-images.githubusercontent.com/50009240/134510828-26997555-4d22-4ceb-8237-85c00e77a219.png" width="1032px" height="477px"></img><br/>
